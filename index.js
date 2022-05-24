@@ -3,6 +3,7 @@ const app = express();
 const port = 4000;
 const bodyParser = require('body-parser');
 const { User } = require("./models/User");
+const config = require('./config/key');
 
 // 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -10,7 +11,7 @@ app.use(bodyParser.json());
 
 // 몽고DB 연결
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://guenwon:1683111@boilerplate.m9ixi.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect(config.mongoURI, {
     
 }).then(() => console.log('MongoDB Connected...'))
 .catch(err => console.log('error'))
