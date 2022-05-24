@@ -1,0 +1,28 @@
+ // 터미널 다운받은 것들
+// --save는 json에 저장
+
+// npm 패키지 
+npm init
+
+// express
+npm install express --save
+
+// 몽고DB
+npm install mongooes --save
+
+// body-parser = client 보내는 데이터를 분석해서 출력해줌
+npm install body-parser --save
+
+// postman
+
+// nodemon = 서버 재시작 없이 변경사항 출력
+npm install nodemon --save-dev
+
+// bcrypt = 비밀번호 암호화
+npm install bcrypt --save
+
+// jsonwebtoken = 비밀번호 토큰 생성
+npm install jsonwebtoken --save
+
+// cookie = 토큰 저장을 위한 쿠키
+npm install cookie-parser --save
