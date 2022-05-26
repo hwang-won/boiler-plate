@@ -4,8 +4,8 @@ const port = 4000;
 const bodyParser = require('body-parser');
 const config = require('./config/key');
 const cookieParser = require('cookie-parser');
-
-const { User } = require("./models/User");
+const { User } = require('./models/User');
+const { auth } = require('./middleware/auth');
 
 
 // 
@@ -24,8 +24,8 @@ app.get('/', (req, res) => {
     res.send('Hello World!!')
 })
 
-// 회원가입 정보
-app.post('/register', (req, res) => {
+// 회원가입 user 정보넣기
+app.post('/api/users/register', (req, res) => {
 
     // 모든 정보 넣음
     const user = new User(req.body)
@@ -38,6 +38,7 @@ app.post('/register', (req, res) => {
     })  
 })
 
+// user 확인 및 토큰 추가
 app.post('/api/users/login', (req, res) => {
     
     // 요청된 이메일을 DB에서 찾음
@@ -62,9 +63,26 @@ app.post('/api/users/login', (req, res) => {
             // 쿠키에 토큰 저장
             res.cookie("x_auth", user.token)
             .status(200)
-            .json({ loginSuccess: true, userId: user._id })
+            .json({ loginSuccess: true, userId: user._id });
             })
         })
+    })
+})
+
+// role 1 어드민, role 2 특정 부서 어드민
+// role  0 -> 일반유저, role 0이 아니면 관리자
+app.get('api/users/auth', auth,  (req, res) => {
+
+    // 여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 turn라는 말.
+    res.status(200).json({
+        _id: req.user._id,
+        isAdmin: req.user.role === 0 ? false : true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image
+
     })
 })
 
