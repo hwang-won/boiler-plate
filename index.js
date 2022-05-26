@@ -4,13 +4,14 @@ const port = 4000;
 const bodyParser = require('body-parser');
 const config = require('./config/key');
 const cookieParser = require('cookie-parser');
-const { User } = require('./models/User');
 const { auth } = require('./middleware/auth');
+const { User } = require("./models/User");
 
 
 // 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // 몽고DB 연결
 const mongoose = require('mongoose');
@@ -21,14 +22,14 @@ mongoose.connect(config.mongoURI, {
 
 // test
 app.get('/', (req, res) => {
-    res.send('Hello World!!')
+    res.send('Hello World!!');
 })
 
 // 회원가입 user 정보넣기
 app.post('/api/users/register', (req, res) => {
 
     // 모든 정보 넣음
-    const user = new User(req.body)
+    const user = new User(req.body);
 
     user.save((err, userInfo) => {
         if(err) return res.json({success: false, err})
@@ -77,16 +78,26 @@ app.get('api/users/auth', auth,  (req, res) => {
     res.status(200).json({
         _id: req.user._id,
         isAdmin: req.user.role === 0 ? false : true,
+        isAuth: true,
         email: req.user.email,
         name: req.user.name,
         lastname: req.user.lastname,
         role: req.user.role,
         image: req.user.image
-
     })
 })
 
-
+// 로그아웃
+app.get('/api/users/logout', auth, (req, res) => {
+    User.findOneAndUpdate({ _id: req.user._id },
+    { token: "" }
+    , (err, user) => {
+        if (err) return res.json({ success: false, err });
+        return res.status(200).send({
+        success: true
+        })
+    })
+})
 
 
 
